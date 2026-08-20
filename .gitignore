@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# claude code local tooling
+.claude/
+
+# client source material (not for delivery)
+*.pdf

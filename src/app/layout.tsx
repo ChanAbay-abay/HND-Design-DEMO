@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
-import { Geist, Geist_Mono, Libre_Baskerville } from "next/font/google"
+import { Geist, Geist_Mono, Source_Serif_4 } from "next/font/google"
+import { PageTransition } from "@/components/common/page-transition"
 import "./globals.css"
 
 const geistSans = Geist({
@@ -12,10 +13,9 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 })
 
-const libreBaskerville = Libre_Baskerville({
+const sourceSerif4 = Source_Serif_4({
   variable: "--font-serif",
   subsets: ["latin"],
-  weight: ["400", "700"],
   style: ["normal", "italic"],
 })
 
@@ -31,11 +31,11 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${libreBaskerville.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${sourceSerif4.variable} antialiased`}
       >
-        {children}
+        <PageTransition>{children}</PageTransition>
       </body>
     </html>
   )

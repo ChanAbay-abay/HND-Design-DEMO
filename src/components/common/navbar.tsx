@@ -6,8 +6,12 @@ import { cn } from "@/lib/utils"
  * @see DESIGN_SYSTEM.md#Navigation
  *
  * UDS specs:
- * - Height: 64px (h-16)
- * - Sticky with backdrop-blur on scroll
+ * - Height: --navbar-height (globals.css, default 4rem/64px) — the navbar
+ *   is fixed/overlaid and consumes no layout height, so full-height or
+ *   pinned sections (e.g. ZoomParallax) must size/position themselves
+ *   against calc(100vh - var(--navbar-height)) and top-(--navbar-height)
+ *   rather than bare h-screen/top-0.
+ * - Fixed, always transparent, floats on top of page content
  * - Border-bottom with border-border token
  * - Padding: px-4
  */
@@ -28,7 +32,7 @@ const Navbar = React.forwardRef<HTMLElement, NavbarProps>(
       data-slot="navbar"
       aria-label="Main navigation"
       className={cn(
-        "border-border bg-background/95 supports-[backdrop-filter]:bg-background/80 sticky top-0 z-40 flex h-16 w-full items-center gap-4 border-b px-4 backdrop-blur",
+        "fixed top-0 left-0 z-40 flex h-(--navbar-height) w-full items-center gap-4 bg-transparent px-4",
         className
       )}
       {...props}

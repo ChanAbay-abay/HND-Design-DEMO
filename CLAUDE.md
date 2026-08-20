@@ -185,6 +185,14 @@ components below instead. If you need visual separation, use `bg-muted/40` — n
 walkthrough, the client has a distinct app UI, or a CTA naturally links somewhere.
 Inner pages use `PageContainer` + `PageHeader`. Link from `Navbar` or CTA buttons.
 
+**Full-height sections must offset for the navbar.** `Navbar` is sticky and consumes
+`--navbar-height` (globals.css, default `4rem` — keep in sync with `Navbar`'s `h-(--navbar-height)`).
+Any section sized or pinned against the viewport — `100vh`/`h-screen`, `sticky` scroll-driven
+scenes, full-bleed heroes — must size/position against `calc(100vh - var(--navbar-height))` and
+`top-(--navbar-height)`, never bare `h-screen`/`top-0`. Otherwise the section either scrolls an
+extra navbar-height before its pinned animation starts, or leaves a navbar-height gap at the end.
+`ZoomParallax` (`components/ui/zoom-parallax.tsx`) is the reference implementation.
+
 ---
 
 ## Images
