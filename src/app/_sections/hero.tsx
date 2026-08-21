@@ -66,6 +66,9 @@ function HeroParallaxScene() {
   }, [])
 
   React.useEffect(() => {
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      return
+    }
     function handleMouseMove(event: MouseEvent) {
       rawX.set(event.clientX / window.innerWidth - 0.5)
       rawY.set(event.clientY / window.innerHeight - 0.5)
@@ -115,7 +118,7 @@ function HeroParallaxScene() {
       {/* Layer 2: HND logo mark — sits directly behind the foreground. */}
       <motion.div
         style={{ x: logo.x, y: logo.y }}
-        className="pointer-events-none absolute top-[6%] left-[3%] h-[56%] w-[56%]"
+        className="pointer-events-none absolute top-[-10%] left-[3%] h-[70%] w-[70%] lg:top-[6%] lg:h-[44%] lg:w-[44%]"
       >
         <Image
           src="/images/HND-logo-transparent.png"

@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, type ReactNode } from "react"
+import { useCallback, useMemo, useRef, useState, type ReactNode } from "react"
 import Image from "next/image"
 import {
   motion,
@@ -60,6 +60,27 @@ export function ZoomParallax({
   onCenterClick,
 }: ZoomParallaxProps) {
   const container = useRef<HTMLDivElement>(null)
+
+  // Shuffled once per mount so the corner photos fade in after the center
+  // in a random order instead of the same index order every load.
+  const revealOrder = useMemo(() => {
+    const order = images.map((_, i) => i)
+    for (let i = order.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[order[i], order[j]] = [order[j], order[i]]
+    }
+    return order
+  }, [images])
+
+  // Corner photos stay hidden until their bytes are actually decoded —
+  // otherwise the opacity transition finishes before the image data
+  // arrives and the reveal reads as a hard pop instead of a fade.
+  const [loadedCount, setLoadedCount] = useState(0)
+  const imagesReady = loadedCount >= images.length
+  const handleImageLoad = useCallback(() => {
+    setLoadedCount((count) => count + 1)
+  }, [])
+
   const { scrollYProgress } = useScroll({
     target: container,
     offset: ["start start", "end end"],
@@ -107,12 +128,15 @@ export function ZoomParallax({
   return (
     <div
       ref={container}
-      className="relative bg-background"
+      className="bg-background relative"
       style={{ height: `${totalVh}vh` }}
       data-zoom-end={zoomEnd}
     >
-      <div className="sticky top-0 h-dvh overflow-hidden bg-background">
+      <div className="bg-background sticky top-0 h-dvh overflow-hidden">
         <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
           style={{ scale: scale4, y: navbarOffset }}
           className="absolute top-0 flex h-full w-full items-center justify-center"
         >
@@ -133,6 +157,13 @@ export function ZoomParallax({
           return (
             <motion.div
               key={src}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: imagesReady ? 1 : 0 }}
+              transition={{
+                duration: 0.7,
+                ease: "easeOut",
+                delay: imagesReady ? 0.25 + revealOrder.indexOf(i) * 0.1 : 0,
+              }}
               style={{ scale, y: navbarOffset }}
               className={`pointer-events-none absolute top-0 flex h-full w-full items-center justify-center ${slot === 1 ? "[&>div]:!-top-[30vh] [&>div]:!left-[5vw] [&>div]:!h-[30vh] [&>div]:!w-[35vw]" : ""} ${slot === 2 ? "[&>div]:!-top-[10vh] [&>div]:!-left-[25vw] [&>div]:!h-[45vh] [&>div]:!w-[20vw]" : ""} ${slot === 3 ? "[&>div]:!left-[27.5vw] [&>div]:!h-[25vh] [&>div]:!w-[25vw]" : ""} ${slot === 4 ? "[&>div]:!top-[27.5vh] [&>div]:!left-[5vw] [&>div]:!h-[25vh] [&>div]:!w-[20vw]" : ""} ${slot === 5 ? "[&>div]:!top-[27.5vh] [&>div]:!-left-[22.5vw] [&>div]:!h-[25vh] [&>div]:!w-[30vw]" : ""} ${slot === 6 ? "[&>div]:!top-[22.5vh] [&>div]:!left-[25vw] [&>div]:!h-[15vh] [&>div]:!w-[15vw]" : ""} `}
             >
@@ -145,6 +176,7 @@ export function ZoomParallax({
                   className="object-cover"
                   sizes="100vw"
                   quality={90}
+                  onLoad={handleImageLoad}
                 />
               </div>
             </motion.div>

@@ -25,9 +25,9 @@ export function ContactDetails() {
       data-navbar-theme="light"
       className="bg-background scroll-mt-(--navbar-height) px-6 py-24 lg:px-16 lg:py-32 xl:px-24"
     >
-      <div className="mx-auto grid max-w-400 gap-16 lg:grid-cols-[1fr_1.2fr] lg:gap-24">
+      <div className="mx-auto grid max-w-400 gap-20 lg:grid-cols-[1fr_1.2fr] lg:gap-24">
         <div className="flex flex-col gap-y-8">
-          <dl className="grid grid-cols-[100px_1fr] items-start gap-x-8 gap-y-8 lg:grid-cols-[120px_1fr]">
+          <dl className="grid grid-cols-[100px_1fr] items-start gap-x-8 gap-y-4 lg:grid-cols-[120px_1fr] lg:gap-y-8">
             <dt className="text-right font-serif text-base">Phone</dt>
             <dd>
               <a
@@ -51,6 +51,10 @@ export function ContactDetails() {
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+          <h2 className="text-center font-serif text-3xl font-medium lg:text-left lg:text-4xl">
+            Contact us
+          </h2>
+
           <div className="grid gap-6 sm:grid-cols-2">
             <div className="flex flex-col gap-2">
               <Label htmlFor="name">Name</Label>

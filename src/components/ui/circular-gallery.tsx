@@ -648,7 +648,7 @@ const CircularGallery = forwardRef<CircularGalleryHandle, CircularGalleryProps>(
       <div
         ref={containerRef}
         className={cn(
-          "h-full w-full cursor-grab overflow-hidden active:cursor-grabbing lg:cursor-auto lg:active:cursor-auto",
+          "h-full w-full cursor-grab touch-none overflow-hidden active:cursor-grabbing lg:cursor-auto lg:active:cursor-auto",
           "text-foreground text-[30px] font-bold",
           fontClassName,
           className

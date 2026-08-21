@@ -43,10 +43,10 @@ renders it — see `CLAUDE.md` for the convention). Gallery project data lives i
 
 - **Team bios are placeholders** — `src/app/about/_sections/team.tsx` still has a
   `TODO` for real team member names, titles, and photos. Needs real info from HND.
-- **Formatting** — `npm run format:check` currently flags 10 files (mostly the
-  animation-heavy components: `zoom-parallax.tsx`, `sketch-reveal.tsx`,
-  `animated-slideshow.tsx`, plus a few section files). Run `npm run format` before
-  final delivery.
+- **Formatting** — `npm run format:check` currently flags 7 files (`CLAUDE.md`,
+  `PRD.md`, `README.md`, `about/_sections/mission-vision.tsx`,
+  `about/_sections/team.tsx`, `gallery/[slug]/_sections/house-info.tsx`,
+  `animated-slideshow.tsx`). Run `npm run format` before final delivery.
 - Typecheck and lint are clean.
 
 Run the full delivery check:
@@ -67,11 +67,19 @@ grep -r "TODO" src/             # team.tsx — see above
 These live in `src/components/ui/` and `src/lib/` and were added specifically for
 this demo — don't assume they exist in a fresh template checkout:
 
-- `zoom-parallax.tsx` — scroll-pinned zoom effect (hero image sequence)
+- `zoom-parallax.tsx` — scroll-pinned zoom effect (hero image sequence), corner
+  photos fade in decode-gated and shuffled once per mount
 - `animated-slideshow.tsx`, `circular-gallery.tsx`, `parallax-floating.tsx`,
   `sketch-reveal.tsx` — portfolio/gallery motion pieces
+  - `sketch-reveal.tsx` (used in `_sections/sketches.tsx`) plays a one-shot
+    render→sketch wipe on scroll-in, then on desktop (`hover: hover` +
+    `pointer: fine`) a small blurred lens follows the cursor showing whichever
+    photo isn't active, and a click grows that lens to fully cover the image —
+    hover/click work symmetrically in both directions (sketch↔render). Mobile
+    falls back to the Sketch/Render pill switcher below the image.
 - `lib/lenis.ts` — smooth-scroll wrapper (Lenis), wired in `layout.tsx`
-- `components/common/page-transition.tsx` — route transition wrapper
+- `components/common/page-transition.tsx` — route fade-in wrapper (fade-in
+  only, no exit animation — see the comment in the file for why)
 
 If you're extending this demo for another client, decide per-component whether these
 belong back in the shared template or are one-off for HND.

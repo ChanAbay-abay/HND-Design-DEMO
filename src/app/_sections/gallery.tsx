@@ -63,7 +63,7 @@ export function DemoGallery() {
           scrollSpeed={0.4}
         />
 
-        <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-2">
+        <div className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 items-center gap-2 lg:flex">
           <button
             type="button"
             onClick={() => galleryRef.current?.scrollPrev()}

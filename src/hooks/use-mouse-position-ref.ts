@@ -18,21 +18,18 @@ export const useMousePositionRef = (
       }
     }
 
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      return
+    }
+
     const handleMouseMove = (ev: MouseEvent) => {
       updatePosition(ev.clientX, ev.clientY)
     }
 
-    const handleTouchMove = (ev: TouchEvent) => {
-      const touch = ev.touches[0]
-      updatePosition(touch.clientX, touch.clientY)
-    }
-
     window.addEventListener("mousemove", handleMouseMove)
-    window.addEventListener("touchmove", handleTouchMove)
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove)
-      window.removeEventListener("touchmove", handleTouchMove)
     }
   }, [containerRef])
 

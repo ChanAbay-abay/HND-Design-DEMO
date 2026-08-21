@@ -123,6 +123,7 @@ const GALLERY_PHOTOS: GalleryPhoto[] = [
 export function FloatingWall() {
   const [scope, animate] = useAnimate()
   const [hoveredSrc, setHoveredSrc] = useState<string | null>(null)
+  const [isTouch, setIsTouch] = useState(false)
 
   useEffect(() => {
     animate(
@@ -132,6 +133,14 @@ export function FloatingWall() {
     )
   }, [animate])
 
+  useEffect(() => {
+    const mq = window.matchMedia("(hover: none), (pointer: coarse)")
+    const applyTouch = () => setIsTouch(mq.matches)
+    applyTouch()
+    mq.addEventListener("change", applyTouch)
+    return () => mq.removeEventListener("change", applyTouch)
+  }, [])
+
   return (
     <div ref={scope} className="bg-background relative">
       {/* Height in vw (not vh) — see the comment on GALLERY_PHOTOS for why
@@ -139,20 +148,24 @@ export function FloatingWall() {
       <div className="relative z-0 min-h-[585vw] w-full overflow-hidden md:min-h-[230vw]">
         <Floating sensitivity={-0.15}>
           {GALLERY_PHOTOS.map((photo) => {
-            const isHovered = hoveredSrc === photo.src
-            const isDimmed = hoveredSrc !== null && !isHovered
+            const isHovered = !isTouch && hoveredSrc === photo.src
+            const isDimmed = !isTouch && hoveredSrc !== null && !isHovered
+            const showVisit = isTouch || isHovered
 
             const cardClassName = cn(
               "group focus-visible:ring-brand block cursor-pointer opacity-0 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] outline-none focus-visible:ring-2",
               isHovered ? "scale-[1.04]" : "scale-100"
             )
-            const cardHandlers = {
-              onMouseEnter: () => setHoveredSrc(photo.src),
-              onMouseLeave: () =>
-                setHoveredSrc((p) => (p === photo.src ? null : p)),
-              onFocus: () => setHoveredSrc(photo.src),
-              onBlur: () => setHoveredSrc((p) => (p === photo.src ? null : p)),
-            }
+            const cardHandlers = isTouch
+              ? {}
+              : {
+                  onMouseEnter: () => setHoveredSrc(photo.src),
+                  onMouseLeave: () =>
+                    setHoveredSrc((p) => (p === photo.src ? null : p)),
+                  onFocus: () => setHoveredSrc(photo.src),
+                  onBlur: () =>
+                    setHoveredSrc((p) => (p === photo.src ? null : p)),
+                }
             const cardContent = (
               <>
                 <div
@@ -184,7 +197,7 @@ export function FloatingWall() {
                     className={cn(
                       "relative text-sm font-medium text-black transition-opacity duration-200",
                       "after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-black after:transition-transform after:duration-300",
-                      isHovered
+                      showVisit
                         ? "opacity-100 after:scale-x-100"
                         : "pointer-events-none opacity-0"
                     )}

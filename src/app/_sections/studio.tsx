@@ -9,14 +9,18 @@ export function DemoStudio() {
         <div>
           <dl className="grid grid-cols-[minmax(0,auto)_1fr] gap-x-4 gap-y-2 leading-tight lg:gap-x-6">
             <dt className="font-serif text-base">Principal Architect</dt>
-            <dd className="text-muted-foreground text-base font-semibold">Henson M. Atillo</dd>
+            <dd className="text-muted-foreground text-base font-semibold">
+              Henson M. Atillo
+            </dd>
 
             <dt className="font-serif text-base">Founded</dt>
-            <dd className="text-muted-foreground text-base font-semibold">2021</dd>
+            <dd className="text-muted-foreground text-base font-semibold">
+              2021
+            </dd>
           </dl>
         </div>
 
-        <p className="font-serif text-2xl leading-snug font-medium text-justify lg:text-3xl">
+        <p className="text-justify font-serif text-2xl leading-snug font-medium lg:text-3xl">
           HND Design + Build is a Cebu-based architectural and construction firm
           delivering high-end residential, interior, and commercial projects
           across Cebu and Manila. Every project moves from first sketch to final

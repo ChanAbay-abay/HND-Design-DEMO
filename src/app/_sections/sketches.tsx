@@ -8,7 +8,7 @@ export function DemoSketches() {
       data-navbar-theme="light"
       className="bg-background relative z-10 scroll-mt-(--navbar-height) py-24 lg:py-36"
     >
-      <h2 className="text-center text-6xl font-semibold tracking-wide text-balance lg:text-8xl">
+      <h2 className="px-6 text-center text-6xl font-semibold tracking-wide text-balance lg:px-16 lg:text-8xl xl:px-24">
         Drafts to Reality
       </h2>
 
@@ -21,12 +21,12 @@ export function DemoSketches() {
         />
 
         <div className="container mx-auto max-w-4xl px-4 py-16 text-center lg:py-24">
-          <p className="font-serif text-muted-foreground text-xl leading-relaxed lg:text-3xl">
+          <p className="text-muted-foreground font-serif text-xl leading-relaxed lg:text-3xl">
             Every project starts on paper. Architect Henson Atillo works through
             several rounds of hand sketches directly with each client — refining
-            layout, flow, and detail together — before a single line is rendered.
-            It&apos;s slower than handing over a template, but it&apos;s why the
-            finished space always matches the vision.
+            layout, flow, and detail together — before a single line is
+            rendered. It&apos;s slower than handing over a template, but
+            it&apos;s why the finished space always matches the vision.
           </p>
         </div>
 
