@@ -366,7 +366,6 @@ export function SketchReveal({
     maskImage: haloMask(radius),
     WebkitMaskImage: haloMask(radius),
     filter: `blur(${BLUR_PX}px)`,
-    transform: "scale(1.08)",
   }
 
   return (
@@ -390,7 +389,7 @@ export function SketchReveal({
             alt={alt}
             fill
             sizes="100vw"
-            className={`object-cover ${objectPosition}`}
+            className={`bg-background object-cover ${objectPosition}`}
             draggable={false}
           />
           {previewDone && (
@@ -400,7 +399,7 @@ export function SketchReveal({
               aria-hidden
               fill
               sizes="100vw"
-              className={`pointer-events-none object-cover ${objectPosition}`}
+              className={`bg-background pointer-events-none object-cover ${objectPosition}`}
               style={haloStyle}
               draggable={false}
             />
@@ -411,7 +410,7 @@ export function SketchReveal({
             aria-hidden
             fill
             sizes="100vw"
-            className={`pointer-events-none object-cover ${objectPosition}`}
+            className={`bg-background pointer-events-none object-cover ${objectPosition}`}
             style={sharpStyle}
             draggable={false}
           />
