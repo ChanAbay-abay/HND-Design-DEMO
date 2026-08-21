@@ -333,8 +333,12 @@ export function SketchReveal({
   }
 
   // The overlay is whichever photo isn't currently active — the one hover
-  // peeks and click expands.
-  const otherSrc = activeIsRender ? progress : full
+  // peeks and click expands. Expressed per-image (rather than a single
+  // `otherSrc`) so the overlay layers below can stay on permanently-mounted
+  // nodes — see the base-layer comment for why nothing in this component
+  // swaps an `<Image>`'s `src` after mount.
+  const fullIsOther = !activeIsRender
+  const progressIsOther = activeIsRender
 
   // Sharp reveal: a crisp circle around the cursor (or, on mobile, the
   // container center) with a short feathered edge.
@@ -356,14 +360,28 @@ export function SketchReveal({
 
   // Before the auto-preview finishes, the render layer is driven by its own
   // jagged clip-path. Once hover/click take over, switch to the radial masks
-  // driven by `radius`/`--x`/`--y` instead.
-  const sharpStyle = previewDone
-    ? { maskImage: sharpMask(radius), WebkitMaskImage: sharpMask(radius) }
-    : { clipPath: wipeClip, WebkitClipPath: wipeClip }
-  const haloStyle = {
-    maskImage: haloMask(radius),
-    WebkitMaskImage: haloMask(radius),
-    filter: `blur(${BLUR_PX}px)`,
+  // driven by `radius`/`--x`/`--y` instead. `isOther` selects whether this
+  // particular image node is the currently-relevant overlay at all — the
+  // inactive pairing collapses to `opacity: 0` rather than getting no style,
+  // so a stale mask/clip from its last active stint can't linger visible.
+  function sharpStyleFor(isOther: boolean) {
+    if (!isOther) return { opacity: 0 }
+    return previewDone
+      ? {
+          maskImage: sharpMask(radius),
+          WebkitMaskImage: sharpMask(radius),
+          opacity: 1,
+        }
+      : { clipPath: wipeClip, WebkitClipPath: wipeClip, opacity: 1 }
+  }
+  function haloStyleFor(isOther: boolean) {
+    if (!isOther) return { opacity: 0 }
+    return {
+      maskImage: haloMask(radius),
+      WebkitMaskImage: haloMask(radius),
+      filter: `blur(${BLUR_PX}px)`,
+      opacity: 1,
+    }
   }
 
   return (
@@ -410,25 +428,47 @@ export function SketchReveal({
             draggable={false}
           />
           {previewDone && (
-            <Image
-              src={otherSrc}
-              alt=""
-              aria-hidden
-              fill
-              sizes="100vw"
-              className={`bg-background pointer-events-none object-cover ${objectPosition}`}
-              style={haloStyle}
-              draggable={false}
-            />
+            <>
+              <Image
+                src={full}
+                alt=""
+                aria-hidden
+                fill
+                sizes="100vw"
+                className={`bg-background pointer-events-none object-cover ${objectPosition}`}
+                style={haloStyleFor(fullIsOther)}
+                draggable={false}
+              />
+              <Image
+                src={progress}
+                alt=""
+                aria-hidden
+                fill
+                sizes="100vw"
+                className={`bg-background pointer-events-none object-cover ${objectPosition}`}
+                style={haloStyleFor(progressIsOther)}
+                draggable={false}
+              />
+            </>
           )}
           <Image
-            src={otherSrc}
+            src={full}
             alt=""
             aria-hidden
             fill
             sizes="100vw"
             className={`bg-background pointer-events-none object-cover ${objectPosition}`}
-            style={sharpStyle}
+            style={sharpStyleFor(fullIsOther)}
+            draggable={false}
+          />
+          <Image
+            src={progress}
+            alt=""
+            aria-hidden
+            fill
+            sizes="100vw"
+            className={`bg-background pointer-events-none object-cover ${objectPosition}`}
+            style={sharpStyleFor(progressIsOther)}
             draggable={false}
           />
         </div>
