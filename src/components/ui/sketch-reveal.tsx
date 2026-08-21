@@ -332,10 +332,8 @@ export function SketchReveal({
     expandAndSwap(target)
   }
 
-  // Base layer is always the currently-active photo, fully opaque and
-  // unmasked; the overlay is whichever photo isn't active — the one hover
+  // The overlay is whichever photo isn't currently active — the one hover
   // peeks and click expands.
-  const baseSrc = activeIsRender ? full : progress
   const otherSrc = activeIsRender ? progress : full
 
   // Sharp reveal: a crisp circle around the cursor (or, on mobile, the
@@ -384,12 +382,31 @@ export function SketchReveal({
           onClick={handleContainerClick}
           className={`relative overflow-hidden select-none lg:cursor-pointer ${className}`}
         >
+          {/* Two permanently-mounted base layers (never swap `src`) with
+              opacity toggled by `activeIsRender`, instead of one layer whose
+              `src` flips between photos. A same-node `src` swap can leave the
+              browser painting the previous photo for a frame while the new
+              one decodes — invisible normally, but here it lands in the
+              exact instant the overlay collapses to radius 0, so the stale
+              frame is briefly uncovered before the new photo finishes
+              painting (a switch → flash-back → correct sequence). Opacity
+              toggling swaps instantly with no decode step. */}
           <Image
-            src={baseSrc}
+            src={full}
             alt={alt}
             fill
             sizes="100vw"
             className={`bg-background object-cover ${objectPosition}`}
+            style={{ opacity: activeIsRender ? 1 : 0 }}
+            draggable={false}
+          />
+          <Image
+            src={progress}
+            alt={alt}
+            fill
+            sizes="100vw"
+            className={`bg-background object-cover ${objectPosition}`}
+            style={{ opacity: activeIsRender ? 0 : 1 }}
             draggable={false}
           />
           {previewDone && (
