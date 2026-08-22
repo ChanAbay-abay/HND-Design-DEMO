@@ -470,7 +470,10 @@ class App {
   onTouchMove(e: MouseEvent | TouchEvent) {
     if (!this.isDown) return
     const x = "touches" in e ? e.touches[0].clientX : e.clientX
-    const distance = (this.start - x) * (this.scrollSpeed * 0.025)
+    // Map finger movement 1:1 with on-screen movement (pixels -> viewport
+    // units) so dragging tracks the touch point exactly, like native scroll.
+    const distance =
+      (this.start - x) * (this.viewport.width / this.screen.width)
     this.scroll.target = this.scroll.position + distance
   }
 
@@ -519,11 +522,11 @@ class App {
   }
 
   update() {
-    this.scroll.current = lerp(
-      this.scroll.current,
-      this.scroll.target,
-      this.scroll.ease
-    )
+    // While actively dragging, follow the finger closely but with a touch of
+    // smoothing so it doesn't feel rigid/snappy — still much tighter than the
+    // slower ease used for the post-release snap/momentum settle.
+    const ease = this.isDown ? 0.35 : this.scroll.ease
+    this.scroll.current = lerp(this.scroll.current, this.scroll.target, ease)
     const direction = this.scroll.current > this.scroll.last ? "right" : "left"
     if (this.medias) {
       this.medias.forEach((media) => media.update(this.scroll, direction))
